@@ -1,0 +1,4 @@
+*.lock
+# Ignorar archivos muy grandes que superan el límite de 100 MB de GitHub
+usv250s7cw.shp
+usv250s7gw_c.zip
