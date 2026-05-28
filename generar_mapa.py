@@ -390,11 +390,11 @@ function toggleLayer(layerName, btnId, iconId) {
     if (isOn) {
         btn.classList.add('on');
         btn.classList.remove('off');
-        icon.innerHTML = '&#128065;';
+        icon.innerHTML = '👁';
     } else {
         btn.classList.remove('on');
         btn.classList.add('off');
-        icon.innerHTML = '&#9898;';
+        icon.innerHTML = '🔘';
     }
 
     // Mostrar/ocultar ítems en la leyenda
@@ -419,6 +419,6 @@ window.addEventListener('load', function() {
 
 m.get_root().html.add_child(Element(dashboard_html))
 
-archivo_salida = "mapa_archipielago.html"
+archivo_salida = "index.html"
 m.save(archivo_salida)
 print(f"¡Listo! Mapa guardado como '{archivo_salida}'.")
