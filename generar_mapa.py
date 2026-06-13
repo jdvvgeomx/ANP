@@ -549,6 +549,107 @@ body { font-family: 'Inter', sans-serif; overflow: hidden; background: #060b14; 
 .li { display:flex; align-items:center; gap:7px; color:#cbd5e1; margin-bottom:5px; }
 .li:last-child { margin-bottom:0; }
 .lsw { width:16px; height:8px; border-radius:2px; }
+
+/* ── Mobile Responsive Styles ────────────────── */
+.m-toggle-btn, .sb-mobile-hdr { display: none !important; }
+
+@media (max-width: 768px) {
+    .m-toggle-btn {
+        display: flex !important;
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1001;
+        background: rgba(16,185,129,0.9);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        cursor: pointer;
+        align-items: center;
+        gap: 6px;
+        transition: background .2s, transform .2s;
+    }
+    .m-toggle-btn:active {
+        background: #10b981;
+        transform: translateX(-50%) scale(0.95);
+    }
+    .sb-mobile-hdr {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 8px;
+    }
+    .sb-mobile-hdr span {
+        font-family: 'Outfit', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #10b981;
+    }
+    .sb-mobile-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 24px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 4px;
+    }
+    
+    /* Sidebars become sliding bottom sheets */
+    .sb {
+        width: calc(100% - 20px) !important;
+        left: 10px !important;
+        right: 10px !important;
+        height: 60% !important;
+        top: auto !important;
+        bottom: -70% !important;
+        transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 2000 !important;
+    }
+    .sb.mobile-open {
+        bottom: 10px !important;
+    }
+
+    /* Compact Header */
+    .hdr {
+        height: 52px !important;
+        padding: 0 14px !important;
+        top: 10px !important;
+        left: 10px !important;
+        right: 10px !important;
+    }
+    .hdr-left { gap: 10px !important; }
+    .hdr-icon { width: 36px !important; height: 36px !important; font-size: 16px !important; border-radius: 8px !important; }
+    .hdr-name { font-size: 13.5px !important; }
+    .hdr-sub { font-size: 8px !important; margin-top: 1px !important; }
+    .hdr-kpis { display: none !important; }
+
+    /* Hide map overlays to clear UI on mobile */
+    .compass { display: none !important; }
+    .leg-pill { display: none !important; }
+
+    /* Adjust map controls position on mobile */
+    .leaflet-bottom.leaflet-right {
+        right: 10px !important;
+        bottom: 80px !important;
+    }
+    .leaflet-bottom.leaflet-left {
+        left: 10px !important;
+        bottom: 80px !important;
+    }
+    
+    /* Hover tooltip hidden on mobile since hover doesn't exist */
+    #hover-tip { display: none !important; }
+}
 </style>
 
 <!-- Chart.js CDN -->
@@ -572,7 +673,12 @@ body { font-family: 'Inter', sans-serif; overflow: hidden; background: #060b14; 
 </div>
 
 <!-- SIDEBAR IZQUIERDO -->
-<div class="sb sb-left gp">
+<div class="sb sb-left gp" id="sb-left">
+  <!-- Cabecera Móvil -->
+  <div class="sb-mobile-hdr">
+    <span>Estadísticas y Filtros</span>
+    <button class="sb-mobile-close" onclick="closeMobileLeft()">×</button>
+  </div>
   <!-- Búsqueda -->
   <div class="srch-wrap">
     <span class="srch-ico">🔍</span>
@@ -641,6 +747,12 @@ body { font-family: 'Inter', sans-serif; overflow: hidden; background: #060b14; 
 
 <!-- SIDEBAR DERECHO -->
 <div class="sb sb-right gp" id="sb-right">
+  <!-- Cabecera Móvil -->
+  <div class="sb-mobile-hdr">
+    <span>Ficha del Fragmento</span>
+    <button class="sb-mobile-close" onclick="closeMobileRight()">×</button>
+  </div>
+
   <!-- Placeholder -->
   <div class="placeholder" id="ph">
     <div class="ph-icon">📍</div>
@@ -741,6 +853,9 @@ body { font-family: 'Inter', sans-serif; overflow: hidden; background: #060b14; 
   <div class="li"><div class="lsw" style="background:#38bdf8;height:3px;"></div>Corriente de Agua</div>
 </div>
 
+<!-- BOTÓN MÓVIL -->
+<button id="m-toggle-btn" class="m-toggle-btn" onclick="toggleMobileLeft()">📊 Panel y Filtros</button>
+
 <script>
 // ── DATOS INYECTADOS POR PYTHON ───────────────────────────────────────────────
 var STATS_MUN      = __STATS_MUN__;
@@ -753,6 +868,20 @@ var baseLayers     = {};
 var carIdx         = 0;
 var carSlides      = [];
 var carTimer       = null;
+
+// ── MOBILE NAVIGATION ──────────────────────────────────────────────────────────
+function toggleMobileLeft() {
+    document.getElementById('sb-left').classList.add('mobile-open');
+    closeMobileRight();
+}
+function closeMobileLeft() {
+    document.getElementById('sb-left').classList.remove('mobile-open');
+}
+function closeMobileRight() {
+    document.getElementById('sb-right').classList.remove('mobile-open');
+    resetStyles();
+    selectedLayer = null;
+}
 
 // ── HELPER: get Leaflet map ────────────────────────────────────────────────────
 function getMap() {
@@ -956,6 +1085,10 @@ function onClick(e) {
     var det = document.getElementById('det');
     det.style.display = 'flex';
     det.classList.remove('det'); void det.offsetWidth; det.classList.add('det'); // re-trigger animation
+
+    // Open right panel on mobile and close left panel
+    document.getElementById('sb-right').classList.add('mobile-open');
+    closeMobileLeft();
 
     document.getElementById('d-id').textContent      = props.Fragment_ID;
     document.getElementById('d-title').textContent   = 'Fragmento ' + props.Fragment_ID;
