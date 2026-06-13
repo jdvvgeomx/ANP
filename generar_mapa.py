@@ -289,9 +289,18 @@ body { font-family: 'Inter', sans-serif; overflow: hidden; background: #060b14; 
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
-/* ── Hide Leaflet native controls ─── */
+/* ── Position Leaflet controls outside sidebars ─── */
 .leaflet-control-layers { display:none!important; }
-.leaflet-bottom.leaflet-right { margin: 0 14px 14px 0; }
+.leaflet-bottom.leaflet-right {
+    right: 330px !important;
+    bottom: 22px !important;
+    margin: 0 !important;
+}
+.leaflet-bottom.leaflet-left {
+    left: 330px !important;
+    bottom: 96px !important;
+    margin: 0 !important;
+}
 .leaflet-bar { border:1px solid rgba(255,255,255,0.08)!important; border-radius:10px!important;
     box-shadow:0 8px 24px rgba(0,0,0,0.6)!important; overflow:hidden; }
 .leaflet-bar a { background:rgba(10,15,30,0.9)!important; backdrop-filter:blur(10px);
