@@ -7,22 +7,15 @@ import json
 import base64
 import os
 
-# ─── CARGAR IMÁGENES COMO BASE64 PARA EMBEBER EN EL HTML ───────────────────────
-def img_b64(filename):
-    path = os.path.join("assets", filename)
-    if not os.path.exists(path):
-        return ""
-    with open(path, "rb") as f:
-        return "data:image/png;base64," + base64.b64encode(f.read()).decode()
-
-print("Codificando imágenes en base64...")
+# ─── REFERENCIAS DE IMÁGENES DE BIODIVERSIDAD ─────────────────────────────────
+print("Cargando rutas de imágenes...")
 IMGS = {
-    "bosque_niebla":   img_b64("bosque_niebla.png"),
-    "orquidea":        img_b64("orquidea.png"),
-    "helecho":         img_b64("helecho.png"),
-    "clarin_jilguero": img_b64("clarin_jilguero.png"),
-    "tlacuache":       img_b64("tlacuache.png"),
-    "cafetal":         img_b64("cafetal.png"),
+    "bosque_niebla":   "assets/bosque_niebla.png",
+    "orquidea":        "assets/orquidea.png",
+    "helecho":         "assets/helecho.png",
+    "clarin_jilguero": "assets/clarin_jilguero.png",
+    "tlacuache":       "assets/tlacuache.png",
+    "cafetal":         "assets/cafetal.png",
 }
 
 # Carruseles por tipo de ecosistema
